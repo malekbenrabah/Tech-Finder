@@ -1,0 +1,468 @@
+<div class="menu">
+   <!--Search result Home-->
+    
+    <div *ngIf="searchResults && !searchBarResults">
+        <div nz-row [nzGutter]="8" >
+
+         
+
+            <!--search-->
+            <div nz-col [nzSpan]="6">
+                <h2 class="filter-search">Filter Search from home</h2>
+                <form [formGroup]="searchForm" >
+
+                    <div class="search-type">
+                        <p class="search-type-txt"><fa-icon [icon]="myJob" class="search-icon"></fa-icon>Job Type</p>
+                       
+    
+                        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a Job Type" formControlName="selectedJobType" class="search-select">
+                            <nz-option *ngFor="let type of jobType" [nzLabel]="type" [nzValue]="type"></nz-option>
+
+                        </nz-select>
+                    </div>
+    
+                    <div nz-row>
+                        <hr class="search-hr">
+                    </div>
+
+                    <div class="search-type">
+                        <p class="search-type-txt"><fa-icon [icon]="myBuildingIcon" class="search-icon" ></fa-icon>Industry</p>
+                       
+                        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select industry" formControlName="selectedJobLevel" class="search-select">
+                            <nz-option *ngFor="let sector of jobSector" [nzLabel]="sector" [nzValue]="sector"></nz-option>
+                        </nz-select>
+                    </div>
+                    
+                    <div nz-row>
+                        <hr class="search-hr">
+                    </div>
+                    
+                    <div class="search-type">
+                        <p class="search-radio-txt"><i nz-icon nzType="thunderbolt" nzTheme="outline"></i>Experience</p>
+                        <nz-radio-group formControlName="experience">
+                            <label nz-radio nzValue="null">All Experiences</label>
+                            <label nz-radio nzValue="No experience">No experience</label>
+                            <label nz-radio nzValue="1-2">1-2 Years</label>
+                            <label nz-radio nzValue="2-6">2-6 Years</label>
+                            <label nz-radio nzValue="Over 6 years">Over 6 years</label>
+                        </nz-radio-group>
+                    </div>
+                </form>
+                
+    
+                
+    
+            </div>
+            <!--search-->
+
+            
+            <div nz-col [nzSpan]="18">
+                <div nz-row>
+                    <div nz-col nzFlex="500px">
+                    <p>Showing : <span class="jobs-num">{{searchResults.length}}</span> Jobs Available</p>
+                    </div>
+                    <div nz-col nzFlex="auto">
+                        <!--
+                        <div class="sort">
+                            <a [ngClass]="{'active': isGridActive}" (click)="isGridActive = true" routerLink="/job-list" nz-button nzType="default"   class="display-btn active"><fa-icon [icon]="listIcon" class="displayIcon"></fa-icon></a>
+                            <a [ngClass]="{'active': !isGridActive}" (click)="isGridActive = false"  routerLink="/job-grid" nz-button nzType="default"  class="display-btn"><fa-icon [icon]="gridIcon" class="displayIcon"></fa-icon></a>
+
+                        </div> 
+                        -->
+                        <div nz-col nzSpan="24" *ngIf="checkSearch===false">
+                            <nz-alert nzType="error" nzMessage="There are no job matching your search." class="no-search-alert"></nz-alert>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="24" *ngIf="searchResults.length===0">
+                        <nz-alert nzType="error" nzMessage="There are no job matching your search." class="no-search-alert"></nz-alert>
+                    </div>
+                </div>
+
+                <!--cards-->
+                
+                <div nz-row  *ngFor="let job of searchResults.slice(startIndexSearch, endIndexSearch)" >
+
+                    <nz-card  [nzActions]="[viewMore, applyQuick]"  >
+                        
+                        <nz-card-meta
+                        [nzAvatar]="avatarTemplate"
+                        [nzTitle]="titleCard"
+                        [nzDescription]="descriptionTmpl"
+                        ></nz-card-meta>
+
+                        <div nz-row [nzGutter]="128" class="card-footer">
+                            <div nz-col [nzSpan]="12">
+                                <div class="job-type-container">
+                                    <p class="job-type"  *ngIf="job.jobType==='Full_Time'">Full Time</p>
+                                    <p class="job-type"  *ngIf="job.jobType==='Part_Time'">Part Time</p>
+                                    <p class="job-type"  *ngIf="job.jobType==='Intern'">Intership</p>
+                                </div>
+                            </div>
+
+                            <div nz-col [nzSpan]="12">
+                                <div class="job-date-container">
+                                    <p class="job-date">{{formatDate(job.created_at)}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </nz-card>
+                    <ng-template #avatarTemplate>
+                        <nz-avatar [nzSize]="64" [nzSrc]="job.companyPhoto"  *ngIf="job.companyPhoto!==null"></nz-avatar>
+                        <nz-avatar [nzSize]="64"  nzIcon="user" *ngIf="job.companyPhoto===null"></nz-avatar>
+                    
+                    </ng-template>
+
+                    <ng-template #titleCard>
+                        <p class="job-title">{{job.title}}</p>
+                        <div class="job-location-title">
+                            <fa-icon [icon]="myLocationIcon"></fa-icon>
+                            <p>{{job.location}}</p> 
+                        </div>
+                    </ng-template>
+
+                    <ng-template #descriptionTmpl>
+                        <p class="card-description" *ngIf="job.description.length<100">{{job.description}}</p>
+                        <p class="card-description" *ngIf="job.description.length>100">{{job.description.slice(0,100)}}...</p>            
+
+                    </ng-template>
+        
+                    <ng-template #viewMore>
+                        <a routerLink="/job-detail/{{job.id}}"><i nz-icon nzType="eye" nz-tooltip nzTooltipTitle="View more"></i></a>
+                    </ng-template>
+        
+                    <ng-template #applyQuick>
+                        <fa-icon [icon]="myJob" nz-tooltip nzTooltipTitle="Quick apply"></fa-icon>
+                    </ng-template>
+        
+                    
+                </div>
+    
+            </div>
+            <!--cards-->
+            
+        </div>
+
+        <!--pagination-->
+        <div nz-row>
+            <div nz-col nzSpan="12" nzOffset="6">
+        
+                <div class="pagination">
+                    <nz-pagination [nzPageIndex]="currentPageSearch" [nzPageSize]="itemsPerPageSearch" [nzTotal]="totalItemsSearch" (nzPageIndexChange)="currentPageSearch = $event"></nz-pagination>
+                </div>
+            
+            </div>
+        </div>
+        
+    </div>
+   <!-- END Search result Home-->
+
+
+
+    <div *ngIf="!searchBarResults && !searchResults">
+        <div nz-row [nzGutter]="8" >
+            <!--search-->
+            <div nz-col [nzSpan]="6">
+                <h2 class="filter-search">Filter Search</h2>
+                <form [formGroup]="searchForm" >
+
+                    <div class="search-type">
+                        <p class="search-type-txt"><fa-icon [icon]="myJob" class="search-icon"></fa-icon>Job Type</p>
+                       
+    
+                        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a Job Type" formControlName="selectedJobType" class="search-select">
+                            <nz-option *ngFor="let type of jobType" [nzLabel]="type" [nzValue]="type"></nz-option>
+
+                        </nz-select>
+                    </div>
+    
+                    <div nz-row>
+                        <hr class="search-hr">
+                    </div>
+
+                    <div class="search-type">
+                        <p class="search-type-txt"><fa-icon [icon]="myBuildingIcon" class="search-icon" ></fa-icon>Industry</p>
+                       
+                        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select industry" formControlName="selectedJobLevel" class="search-select">
+                            <nz-option *ngFor="let sector of jobSector" [nzLabel]="sector" [nzValue]="sector"></nz-option>
+                        </nz-select>
+                    </div>
+                    
+                    <div nz-row>
+                        <hr class="search-hr">
+                    </div>
+                    
+                    <div class="search-type">
+                        <p class="search-radio-txt"><i nz-icon nzType="thunderbolt" nzTheme="outline"></i>Experience</p>
+                        <nz-radio-group formControlName="experience">
+                            <label nz-radio nzValue="null">All Experiences</label>
+                            <label nz-radio nzValue="No experience">No experience</label>
+                            <label nz-radio nzValue="1-2">1-2 Years</label>
+                            <label nz-radio nzValue="2-6">2-6 Years</label>
+                            <label nz-radio nzValue="Over 6 years">Over 6 years</label>
+                        </nz-radio-group>
+                    </div>
+                </form>
+                
+    
+                
+    
+            </div>
+            <!--search-->
+    
+            
+            <div nz-col [nzSpan]="18">
+                <div nz-row>
+                    <div nz-col nzFlex="500px">
+                      <p>Showing : <span class="jobs-num">{{numJobs}}</span> Jobs Available</p>
+                    </div>
+                    <div nz-col nzFlex="auto">
+                      
+                        
+                    </div>
+                    <div nz-col nzSpan="24" *ngIf="checkSearch===false">
+                        <nz-alert nzType="error" nzMessage="There are no job matching your search." class="no-search-alert"></nz-alert>
+                    </div>
+                    
+                </div>
+
+               
+                <!--cards-->
+                
+                <div nz-row>
+
+                    <nz-card  [nzActions]="[viewMore, applyQuick]"  >
+                        
+                        <nz-card-meta
+                        [nzAvatar]="avatarTemplate"
+                        [nzTitle]="titleCard"
+                        [nzDescription]="descriptionTmpl"
+                        ></nz-card-meta>
+    
+                        <div nz-row [nzGutter]="128" class="card-footer">
+                            <div nz-col [nzSpan]="12">
+                                <div class="job-type-container">
+                                    <p class="job-type">Full Time</p>
+                                   
+                                </div>
+                            </div>
+    
+                            <div nz-col [nzSpan]="12">
+                                <div class="job-date-container">
+                                    <p class="job-date">17-02-1999</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </nz-card>
+                    <ng-template #avatarTemplate> 
+                        <nz-avatar [nzSize]="64"  nzIcon="user"></nz-avatar>
+                    </ng-template>
+    
+                    <ng-template #titleCard>
+                        <p class="job-title">Title</p>
+                        <div class="job-location-title">
+                            <fa-icon [icon]="myLocationIcon"></fa-icon>
+                            <p>location</p> 
+                        </div>
+                    </ng-template>
+
+                    <ng-template #descriptionTmpl>
+             
+                        <p class="card-description">description</p>            
+
+                    </ng-template>
+        
+                    <ng-template #viewMore>
+                        <a routerLink="/job-detail/1"><i nz-icon nzType="eye" nz-tooltip nzTooltipTitle="View more"></i></a>
+                    </ng-template>
+        
+                    <ng-template #applyQuick>
+                        <fa-icon [icon]="myJob" nz-tooltip nzTooltipTitle="Quick apply"></fa-icon>
+                    </ng-template>
+        
+                    
+                </div>
+
+
+
+        
+               
+                
+                
+            </div>
+            <!--cards-->
+             
+        </div>
+
+        <!--pagination-->
+        <div nz-row>
+            <div nz-col nzSpan="12" nzOffset="6">
+        
+                <div class="pagination">
+                    <nz-pagination [nzPageIndex]="currentPage" [nzPageSize]="itemsPerPage" [nzTotal]="totalItems" (nzPageIndexChange)="currentPage = $event"></nz-pagination>
+                </div>
+               
+            </div>
+        </div>
+        
+    </div>
+
+    <!--Serach Bar Result-->
+    <div *ngIf="searchBarResults">
+        <div nz-row [nzGutter]="8" >
+            <!--search-->
+            <div nz-col [nzSpan]="6">
+                <h2 class="filter-search">Filter Search</h2>
+                <form [formGroup]="searchForm" >
+
+                    <div class="search-type">
+                        <p class="search-type-txt"><fa-icon [icon]="myJob" class="search-icon"></fa-icon>Job Type</p>
+                       
+    
+                        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a Job Type" formControlName="selectedJobType" class="search-select">
+                            <nz-option *ngFor="let type of jobType" [nzLabel]="type" [nzValue]="type"></nz-option>
+
+                        </nz-select>
+                    </div>
+    
+                    <div nz-row>
+                        <hr class="search-hr">
+                    </div>
+
+                    <div class="search-type">
+                        <p class="search-type-txt"><fa-icon [icon]="myBuildingIcon" class="search-icon" ></fa-icon>Industry</p>
+                       
+                        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select industry" formControlName="selectedJobLevel" class="search-select">
+                            <nz-option *ngFor="let sector of jobSector" [nzLabel]="sector" [nzValue]="sector"></nz-option>
+                        </nz-select>
+                    </div>
+                    
+                    <div nz-row>
+                        <hr class="search-hr">
+                    </div>
+                    
+                    <div class="search-type">
+                        <p class="search-radio-txt"><i nz-icon nzType="thunderbolt" nzTheme="outline"></i>Experience</p>
+                        <nz-radio-group formControlName="experience">
+                            <label nz-radio nzValue="null">All Experiences</label>
+                            <label nz-radio nzValue="No experience">No experience</label>
+                            <label nz-radio nzValue="1-2">1-2 Years</label>
+                            <label nz-radio nzValue="2-6">2-6 Years</label>
+                            <label nz-radio nzValue="Over 6 years">Over 6 years</label>
+                        </nz-radio-group>
+                    </div>
+                </form>
+            </div>
+            <!--search-->
+    
+            
+            <div nz-col [nzSpan]="18">
+
+                <div nz-row>
+                    <div nz-col nzFlex="500px">
+                      <p>Showing : <span class="jobs-num">{{searchBarResults.length}}</span> Jobs Available</p>
+                    </div>
+                    <div nz-col nzFlex="auto">
+                       <!--
+                       <div class="sort">
+                            <a [ngClass]="{'active': isGridActive}" (click)="isGridActive = true" routerLink="/job-list" nz-button nzType="default"   class="display-btn active"><fa-icon [icon]="listIcon" class="displayIcon"></fa-icon></a>
+                            <a [ngClass]="{'active': !isGridActive}" (click)="isGridActive = false"  routerLink="/job-grid" nz-button nzType="default"  class="display-btn"><fa-icon [icon]="gridIcon" class="displayIcon"></fa-icon></a>
+
+                        </div> 
+                        -->
+                        
+                    </div>
+                    <div nz-col nzSpan="24" *ngIf="searchBarResults.length===0">
+                        <nz-alert nzType="error" nzMessage="There are no job matching your search." class="no-search-alert"></nz-alert>
+
+                    </div>
+
+                </div>
+
+               
+                <!--cards-->
+                
+                <div nz-row  >
+
+                    <nz-card  [nzActions]="[viewMore, applyQuick]"  >
+                        
+                        <nz-card-meta
+                        [nzAvatar]="avatarTemplate"
+                        [nzTitle]="titleCard"
+                        [nzDescription]="descriptionTmpl"
+                        ></nz-card-meta>
+    
+                        <div nz-row [nzGutter]="128" class="card-footer">
+                            <div nz-col [nzSpan]="12">
+                                <div class="job-type-container">
+                                    <p class="job-type">Full Time</p>
+                                 
+                                </div>
+                            </div>
+    
+                            <div nz-col [nzSpan]="12">
+                                <div class="job-date-container">
+                                    <p class="job-date">17-02-1999</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </nz-card>
+                    <ng-template #avatarTemplate>
+                        <nz-avatar [nzSize]="64"  nzIcon="user"></nz-avatar>
+                       
+                    </ng-template>
+    
+                    <ng-template #titleCard>
+                        <p class="job-title">Title</p>
+                        <div class="job-location-title">
+                            <fa-icon [icon]="myLocationIcon"></fa-icon>
+                            <p>Location</p> 
+                        </div>
+                    </ng-template>
+
+                    <ng-template #descriptionTmpl>
+                        <p class="card-description">Description</p>            
+
+                    </ng-template>
+        
+                    <ng-template #viewMore>
+                        <a routerLink="/job-detail/1"><i nz-icon nzType="eye" nz-tooltip nzTooltipTitle="View more"></i></a>
+                    </ng-template>
+        
+                    <ng-template #applyQuick>
+                        <fa-icon [icon]="myJob" nz-tooltip nzTooltipTitle="Quick apply"></fa-icon>
+                    </ng-template>
+        
+                    
+                </div>
+
+
+
+        
+               
+                
+                
+            </div>
+            <!--cards-->
+             
+        </div>
+
+        <!--pagination-->
+        <div nz-row>
+            <div nz-col nzSpan="12" nzOffset="6">
+        
+                <div class="pagination">
+                    <nz-pagination [nzPageIndex]="currentPageSearchBar" [nzPageSize]="itemsPerPageSearchBar" [nzTotal]="totalItemsSearchBar" (nzPageIndexChange)="currentPageSearchBar = $event"></nz-pagination>
+                </div>
+               
+            </div>
+        </div>
+        
+    </div>
+    <!--END Search Bar Result-->
+   
+   
+
+</div>
