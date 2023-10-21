@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home.component';
-import { JobDetailComponent } from './job-detail/job-detail.component';
-import { NotFoundComponent } from './not-found/not-found.component';
 import { LayoutComponent } from './layout/layout.component';
 import { AuthGuard } from 'src/app/services/guards/auth.guard';
 import { JobListComponent } from './job-list/job-list.component';
@@ -22,13 +20,13 @@ const routes: Routes = [
     {path:"job-grid",component:JobGridComponent},
     {path:"companies",component:CompaniesComponent},
     {path:"company-detail",component:CompanyDetailComponent},
-    {path:"account" , loadChildren:()=>import("../account/account.module").then(module=>module.AccountModule),canActivate:[AuthGuard]},
+    {path:"account" , loadChildren:()=>import("../account/account.module").then(module=>module.AccountModule)},
 
   ]},
   
   
   /*{path:'admin',loadChildren:()=>import("./../../admin/admin.module").then(module=>module.AdminModule),canActivate:[AdminGuard]},*/
-  {path:'auth',loadChildren:()=>import("./../../auth/auth.module").then(module=>module.AuthModule),canActivate: [LoggedInGuard]},
+  {path:'auth',loadChildren:()=>import("./../../auth/auth.module").then(module=>module.AuthModule)},
 
   /*{ path: '**', redirectTo: 'not-found' }*/
 ];

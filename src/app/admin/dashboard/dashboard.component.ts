@@ -31,6 +31,7 @@ export class DashboardComponent implements OnInit {
   ];
   jobs:Job[]=[];
   ngOnInit(): void {
+    
     this.userService.getCompanies().subscribe((response)=>{
       console.log('companies',response);
       this.companies=response as User[];

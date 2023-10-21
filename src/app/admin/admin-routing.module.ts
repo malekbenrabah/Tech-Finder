@@ -16,7 +16,7 @@ const routes: Routes = [
       {path:'users',component:UsersComponent},
       {path:'companies',component:CompaniesComponent},
       {path:'account', component:AccountComponent}
-   ],canActivate:[AdminGuard]
+   ]
   },
   
   {path:'admin-auth',loadChildren:()=>import("./auth-admin/auth-admin.module").then(module=>module.AuthAdminModule)}

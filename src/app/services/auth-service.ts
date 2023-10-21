@@ -61,4 +61,8 @@ export class AuthService {
     return this.keycloak.getKeycloakInstance().authenticated;
   }
 
+  userRole(){
+    return this.keycloak.getUserRoles();
+  }
+
 }
