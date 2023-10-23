@@ -26,9 +26,11 @@ export class AuthService {
   }
 
   login() {
-    this.keycloak
-      .login({ redirectUri: 'http://localhost:4200' })
-      .then();
+    this.keycloak.login({ redirectUri: 'http://localhost:4200' }).then();
+  }
+
+  register() {
+    this.keycloak.register({ redirectUri: 'http://localhost:4200' }).then();
   }
 
   isLoggedIn(): Promise<boolean> {
@@ -57,12 +59,15 @@ export class AuthService {
     return this.keycloak.getKeycloakInstance().isTokenExpired();
   }
 
-  isAuthenticated():any{
+  isAuthenticated(): any {
     return this.keycloak.getKeycloakInstance().authenticated;
   }
 
-  userRole(){
+  userRole() {
     return this.keycloak.getUserRoles();
   }
 
+  getUserData() {
+    return this.keycloak.getKeycloakInstance().loadUserInfo();
+  }
 }

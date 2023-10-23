@@ -1,106 +1,156 @@
 <nz-header>
-
-    <div class="logo">
-        <a routerLink="" class="logo-p">Tech<span class="logo-span">Finder</span></a>
-    </div>
-
-    <ul nz-menu nzTheme="dark" nzMode="horizontal" *ngIf="!isSmallScreen">
-        <li nz-menu-item><a routerLink="/job-list">Products</a></li>
-        <li nz-menu-item><a routerLink="/companies">Categories</a></li>
-        <li nz-menu-item><a routerLink="">About Us</a></li>
-    </ul>
-
-    <!--<a *ngIf="!userLoggedIn"  routerLink="/auth/register" nz-button nzType="default" class="sign-in-button" nzShape="round">Sign In </a>-->
-    <a  *ngIf="!authenticated()"  nz-button nzType="default" class="sign-in-button" nzShape="round" (click)="login()">Sign In </a>
-
-    <a nz-button nzType="primary" class="cart-btn" (click)="openCart()"><i nz-icon nzType="shopping-cart" nzTheme="outline" ></i></a>
-    <nz-drawer
-      [nzClosable]="true"
-      [nzVisible]="visibleCart"
-      nzPlacement="right"
-      nzTitle="Cart"
-      (nzOnClose)="closecart()"
+  <div class="logo">
+    <a routerLink="" class="logo-p"
+      >Tech<span class="logo-span">Finder</span></a
     >
-      <ng-container *nzDrawerContent>
-        <div class="cart-info-title">
-          <p class="total-info">Total items : <span>10</span></p>
-          <button nz-button class="cart-clear"> clear all</button>
+  </div>
+
+  <ul nz-menu nzTheme="dark" nzMode="horizontal" *ngIf="!isSmallScreen">
+    <li nz-menu-item><a routerLink="/job-list">Products</a></li>
+    <li nz-menu-item><a routerLink="/companies">Categories</a></li>
+    <li nz-menu-item><a routerLink="">About Us</a></li>
+  </ul>
+
+  <a
+    *ngIf="!authenticated()"
+    nz-button
+    nzType="default"
+    class="sign-in-button"
+    nzShape="round"
+    (click)="login()"
+    >Sign In</a
+  >
+  <a
+    *ngIf="!authenticated()"
+    nz-button
+    nzType="default"
+    class="register-button"
+    nzShape="round"
+    (click)="register()"
+    >Register</a
+  >
+
+  <a
+    nz-button
+    nzType="primary"
+    class="cart-btn"
+    (click)="openCart()"
+    *ngIf="authenticated()"
+  >
+    Cart
+    <i nz-icon nzType="shopping-cart" nzTheme="outline"></i>
+  </a>
+
+  <nz-drawer
+    [nzClosable]="true"
+    [nzVisible]="visibleCart"
+    nzPlacement="right"
+    nzTitle="Cart"
+    (nzOnClose)="closecart()"
+  >
+    <ng-container *nzDrawerContent>
+      <div class="cart-info-title">
+        <p class="total-info">
+          Total items: <span>{{ cartItems.length }}</span>
+        </p>
+        <button nz-button class="cart-clear" (click)="clearCart()">
+          Clear all
+        </button>
+      </div>
+      <nz-list nzItemLayout="horizontal">
+        <nz-list-item *ngFor="let item of cartItems; let i = index">
+          <nz-list-item-meta
+            nzAvatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+            nzDescription="{{ item.product.description }}"
+          >
+            <nz-list-item-meta-title>
+              <a [routerLink]="'/job-details/' + item.id">{{
+                item.product.name
+              }}</a>
+              <p>Price: {{ item.product.price }} DT</p>
+              <div>
+                <label for="quantity{{ i }}">Quantity:</label>
+                <input
+                  type="number"
+                  id="quantity{{ i }}"
+                  [(ngModel)]="item.quantity"
+                  name="quantity{{ i }}"
+                  min="1"
+                  (ngModelChange)="onQuantityInputChange(item)"
+                  #quantityInput
+                />
+              </div>
+            </nz-list-item-meta-title>
+          </nz-list-item-meta>
+        </nz-list-item>
+        <nz-list-empty *ngIf="cartItems.length === 0"></nz-list-empty>
+      </nz-list>
+
+      <div>
+        <p>Total: {{ cartTotal }} DT</p>
+      </div>
+      <div nz-row class="cart-btns">
+        <div nz-col nzSpan="12">
+          <button
+            nz-button
+            nzType="primary"
+            class="view-btn"
+            (click)="checkout()"
+          >
+            Checkout
+          </button>
         </div>
-        <nz-list nzItemLayout="horizontal" >
-          <nz-list-item *ngFor="let item of data">
-            <nz-list-item-meta
-              nzAvatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-              nzDescription="Ant Design, a design language for background applications, is refined by Ant UED Team"
-            >
-              <nz-list-item-meta-title>
-                <a href="https://ng.ant.design">{{ item.title }}</a>
-              </nz-list-item-meta-title>
-            </nz-list-item-meta>
-          </nz-list-item>
-          <nz-list-empty *ngIf="data.length === 0"></nz-list-empty>
-        </nz-list>
+      </div>
+    </ng-container>
+  </nz-drawer>
 
-        <div>
-          <p>Sub Total</p>
-          <p>Tax</p>
-          <p>Total</p>
-        </div>
-        <div nz-row class="cart-btns">
-          <div nz-col nzSpan="12">
-            <button nz-button nzType="primary" class="view-btn" >View Cart</button>
-          </div>
+  <div class="profile" *ngIf="authenticated()">
+    <a nz-dropdown [nzDropdownMenu]="menu">
+      <nz-avatar nzIcon="user" class="avatar-center"></nz-avatar>
+    </a>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+      <ul nz-menu class="profile-menu">
+        <li nz-menu-item class="profile-menu-item" *ngIf="isAdmin">
+          <a routerLink="/admin">Dashboard</a>
+        </li>
+        <li nz-menu-item class="profile-menu-item">
+          <a routerLink="/account/profile">Profile</a>
+        </li>
+        <li nz-menu-item class="profile-menu-item" (click)="logout()">
+          Logout
+        </li>
+      </ul>
+    </nz-dropdown-menu>
+  </div>
 
-          <div nz-col nzSpan="12">
-            <button nz-button nzType="primary" class="view-btn" >Checkout</button>
-          </div>
-        </div>
-      </ng-container>
+  <span
+    class="header-trigger"
+    (click)="isCollapsed = !isCollapsed"
+    *ngIf="isSmallScreen"
+  >
+    <i
+      class="trigger"
+      nz-icon
+      [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+      (click)="open()"
+    ></i>
+  </span>
 
-     
-    </nz-drawer>
-    
-    
-    <div class="profile" *ngIf="authenticated()">
-      <a nz-dropdown [nzDropdownMenu]="menu">
-        <nz-avatar nzIcon="user" class="avatar-center"></nz-avatar>
-        
-      </a>
-      <nz-dropdown-menu #menu="nzDropdownMenu">
-        <ul nz-menu class="profile-menu">
-         
-          <li nz-menu-item class="profile-menu-item" (click)="logout()">logout</li>
-        </ul>
-      </nz-dropdown-menu>
-    </div>
-     
-    
-      
-   
+  <nz-drawer
+    [nzClosable]="false"
+    [nzVisible]="visible"
+    [nzPlacement]="placement"
+    [nzTitle]="Jobfinder"
+    (nzOnClose)="close()"
+  >
+    <ng-container *nzDrawerContent>
+      <p><a routerLink="" class="nav-small">Products</a></p>
+      <p><a routerLink="" class="nav-small">Categories</a></p>
+      <p><a routerLink="" class="nav-small">About Us</a></p>
+    </ng-container>
+  </nz-drawer>
 
-    <!-- small screen -->
-    <span class="header-trigger" (click)="isCollapsed = !isCollapsed" *ngIf="isSmallScreen" >
-        <i class="trigger"
-           nz-icon
-           [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
-           (click)="open()"
-        ></i>
-    </span>
-
-    <nz-drawer
-      [nzClosable]="false"
-      [nzVisible]="visible"
-      [nzPlacement]="placement"
-      [nzTitle]="Jobfinder"
-      (nzOnClose)="close()"
-    >
-      <ng-container *nzDrawerContent>
-        <p><a routerLink="" class="nav-small">Products</a></p>
-        <p><a routerLink="" class="nav-small">Categories</a></p>
-        <p><a routerLink="" class="nav-small">About Us</a></p>
-      </ng-container>
-    </nz-drawer>
-    <ng-template #Jobfinder>
-        <p class="logo-p">Tech<span class="logo-span">Finder</span></p>
-    </ng-template>
-
+  <ng-template #Jobfinder>
+    <p class="logo-p">Tech<span class="logo-span">Finder</span></p>
+  </ng-template>
 </nz-header>
