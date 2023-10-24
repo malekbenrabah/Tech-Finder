@@ -36,6 +36,11 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+import { ProductsComponent } from './products/products.component';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { BrandsComponent } from './brands/brands.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +49,9 @@ import { NzDrawerModule } from 'ng-zorro-antd/drawer';
     DashboardComponent,
     CompaniesComponent,
     UsersComponent,
-    AccountComponent
+    AccountComponent,
+    ProductsComponent,
+    BrandsComponent
   
   ],
   imports: [
@@ -77,7 +84,10 @@ import { NzDrawerModule } from 'ng-zorro-antd/drawer';
     NzDatePickerModule,
     NzTagModule,
     NzListModule,
-    NzDrawerModule
+    NzDrawerModule,
+    NzStepsModule,
+    NzUploadModule,
+    NzSelectModule
    
   ]
 })

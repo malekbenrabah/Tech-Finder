@@ -7,6 +7,7 @@ import { UsersComponent } from './users/users.component';
 import { CompaniesComponent } from './companies/companies.component';
 import { AdminGuard } from '../services/guards/admin/admin.guard';
 import { AccountComponent } from './account/account.component';
+import { ProductsComponent } from './products/products.component';
 
 const routes: Routes = [
   {path:'', component:AdminComponent,
@@ -15,7 +16,8 @@ const routes: Routes = [
       {path:'jobs',component:JobsComponent},
       {path:'users',component:UsersComponent},
       {path:'companies',component:CompaniesComponent},
-      {path:'account', component:AccountComponent}
+      {path:'account', component:AccountComponent},
+      {path:'products', component:ProductsComponent}
    ]
   },
   

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faLocationDot, faAward, faUserTie, faHourglassEnd, faSuitcase , faAt , faPhone, faUsers} from '@fortawesome/free-solid-svg-icons';
-import { faBuilding, faClock} from '@fortawesome/free-regular-svg-icons';
+import { faLocationDot, faAward, faUserTie, faHourglassEnd, faSuitcase , faAt , faPhone, faUsers, faMoneyBill} from '@fortawesome/free-solid-svg-icons';
+import { faBuilding, faClock, faCopyright} from '@fortawesome/free-regular-svg-icons';
 import { JobService } from 'src/app/services/jobs/job.service';
 import { Job } from 'src/app/services/user/model/Job';
 import { UserServiceService } from 'src/app/services/user/user-service.service';
@@ -9,6 +9,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import * as L from'leaflet';
 import { LocationService } from 'src/app/services/location/location.service';
+import { ProductService } from 'src/app/services/product/product.service';
+import { Product } from 'src/app/services/user/model/Product';
+import { Brand } from 'src/app/services/user/model/Brand';
+import { NzImageService } from 'ng-zorro-antd/image';
+import { Photo } from 'src/app/services/user/model/Photo';
 @Component({
   selector: 'app-job-detail2',
   templateUrl: './job-detail2.component.html',
@@ -16,194 +21,142 @@ import { LocationService } from 'src/app/services/location/location.service';
 })
 export class JobDetail2Component implements OnInit {
 
-  array = [1, 2, 3, 4];
+  
 
+  fallback =
+  'data:image/png;base64,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';
 
   myLocationIcon=faLocationDot;
-  myBuildingIcon=faBuilding;
+  myBuildingIcon=faCopyright;
   experienceIcon=faAward;
   jobLevelIcon=faUserTie;
   deadlineIcon=faHourglassEnd;
-  myJob=faSuitcase;
+  myJob=faMoneyBill;
   cretedatIcon=faClock;
   companyEmailIcon=faAt;
   companyPhoneIcon=faPhone;
   usersIcon=faUsers;
 
   selected: string = 'jobDesc';
-  constructor(private route: ActivatedRoute, private jobService:JobService, private userService:UserServiceService, private router:Router, private locationService:LocationService) { }
+  constructor(private route: ActivatedRoute, private productServie:ProductService, private nzImageService: NzImageService) { }
 
   job:Job=new Job();
  
-  deadLine!:Date; 
-  deadLineTime: { days: number, hours: number, minutes: number } = { days: 0, hours: 0, minutes: 0 };
 
   nbApplicants!:number;
 
   similarJobs:Job[]=[];
   openJobs:Job[]=[];
   companyOpenJobs!:number;
+  product:Product=new Product();
+  similarProducts:Product[]=[];
   ngOnInit(): void {
     const id=Number(this.route.snapshot.params['id']);
+    console.log('id',id);
+    this.productServie.getProduct(id).subscribe((response)=>{
+      console.log('product details', response);
+      this.product=response as Product;
+      console.log('product',this.product.brandId);
 
-    //job detail
-    this.jobService.getJobById(id).subscribe((response)=>{
-      console.log("job details", response);
-      this.job=response as Job;
-      
-      //countDown
-      const [year, month, day, hour, minute] = this.job.deadline;
-     
-      const deadlineDate = new Date(year, month - 1, day, hour, minute);
 
-      this.deadLine=deadlineDate;
-
-    
-      this.calculateDountDown();
-      setInterval(() => {
-        this.calculateDountDown();
-      }, 1000);
-      
-      // end countdown
-
-      //nb of applicants 
-      this.nbApplicants=this.job.users.length;
-
-      //open jobs
-      console.log('company email', this.job.companyEmail);
-      this.jobService.getCompanyOpenJobs(this.job.companyEmail).subscribe((response)=>{
-        this.openJobs=response as Job[];
-        this.companyOpenJobs=this.openJobs.length;
+      this.productServie.getBrandById(this.product.brandId).subscribe((response)=>{
+        console.log('brand by id', response);
+        var brand:Brand= response as Brand;
+        this.product.brandName=brand.name;
+        this.product.brandPhoto=brand.photo;
       });
-      
+
+      this.productServie.similarProduct(this.product.id).subscribe((response)=>{
+        console.log('similar product',response);
+        this.similarProducts=response as Product[];
+      });
+
     });
 
+  
+  }
 
-    //similar Jobs
-    this.jobService.getSimilarJobs(id).subscribe((response)=>{
-      console.log('similar jobs', response );
-      this.similarJobs=response as Job[];
-    });
+  //view photos
 
+  selectedProduct!:Product;
+  onClick(id:number): void {
+     
+    this.productServie.getProduct(id).subscribe((response) => {
+       
+      this.selectedProduct = response as Product;
+
+      var images=[];
+      if(this.selectedProduct.photos===null){
+         images = [
+          {
+            src: 'https://img.alicdn.com/tfs/TB1g.mWZAL0gK0jSZFtXXXQCXXa-200-200.svg',
+            width: '200px',
+            height: '200px',
+            alt: 'ng-zorro'
+          }
+        ];
+        
+      }else{
+        images = this.selectedProduct.photos.map((photo: Photo) => ({
+          src: photo.path,
+          width: '200px',
+          height: '200px',
+          alt: 'Product Image'
+        }));
+     
+       
+      }
+
+      this.nzImageService.preview(images, { nzZoom: 1.5, nzRotate: 0 });
     
-
-
+    });
   }
 
   //buttons 
   isbtnActive=true;
 
 
-  //count down deadline 
-  deadlineOver=false;
-  calculateDountDown(){
-    //countDown
-    const currentTime = new Date().getTime();
-    const timeDifference = this.deadLine.getTime() - currentTime;
-
-    if (timeDifference > 0) {
-      this.deadLineTime.days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-      this.deadLineTime.hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      this.deadLineTime.minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-      
-    }else{
-        this.deadlineOver=true;
-    }
-  }
 
 
-  //format Date 
-  formatDate(created_at: any[]): string {
 
-    const year = created_at[0];
-    const month = created_at[1] - 1; // Months in JavaScript are 0-based
-    const day = created_at[2];
-    const hours = created_at[3];
-    const minutes = created_at[4];
-    const seconds = created_at[5];
-
-    const createdAt = new Date(year, month, day, hours, minutes, seconds);
-
+  //formatting the date
+  formatDate(created_at: string): string {
+    const timestamp = new Date(created_at);
     const now = new Date();
-    const elapsed = now.getTime() - createdAt.getTime();
+    const elapsed = now.getTime() - timestamp.getTime();
 
     if (elapsed < 60000) {
       return 'Just now';
     } else if (elapsed < 3600000) {
       const minutes = Math.floor(elapsed / 60000);
-      return `${minutes} minutes ago`;
+      return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
     } else if (elapsed < 86400000) {
       const hours = Math.floor(elapsed / 3600000);
-      return `${hours} hours ago`;
+      return `${hours} hour${hours > 1 ? 's' : ''} ago`;
     } else {
-      const year = createdAt.getFullYear();
-      const month = String(createdAt.getMonth() + 1).padStart(2, '0');
-      const day = String(createdAt.getDate()).padStart(2, '0');
+      const dateFormatter = new Intl.DateTimeFormat('en', { year: 'numeric', month: '2-digit', day: '2-digit' });
+      const [{ value: day },,{ value: month },,{ value: year }] = dateFormatter.formatToParts(timestamp);
       return `${day}-${month}-${year}`;
     }
-    
   }
 
-  formatDeadline(dateArray: any[]){
-    if (dateArray.length >= 3) {
-      const year = dateArray[0];
-      const month = dateArray[1]; // Months in JavaScript are 0-based
-      const day = dateArray[2];
-      return `${day}-${month}-${year}`;
-    }
-    return 'Invalid Date';
+  onClickImg(): void {
+
+    const imagesProduct = this.product.photos.map((photo: Photo) => ({
+      src: photo.path,
+      width: '200px',
+      height: '200px',
+      alt: 'Product Image'
+    }));
+    this.nzImageService.preview(imagesProduct, { nzZoom: 1.5, nzRotate: 0 });
   }
 
-  //apply job
-  applyJob(id:number){
-    if(this.userService.isLoggedIn()){
 
-      this.jobService.applyJob(id).subscribe((response)=>{
-        console.log('applied successfully',response);
-        
-        Swal.fire({
-          icon:"success",
-          title:"Good Job",
-          text:"You have applied succesfully",
-          confirmButtonColor:"#05264E"
-        })
-        this.ngOnInit();
-      },
-      (error:HttpErrorResponse)=>{
-        if(error.status===403 ){
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'You have already applied to this job',
-            confirmButtonColor:"#05264E"
-          })
-        }
+   
+  
+      
 
-      });
-
-    }else{
-       this.router.navigate(['/auth/login']);
-    }
-    
-  }
-
-  //map
-  private map!:L.Map;
-  private centroid:L.LatLngExpression=[36.806389, 10.181667]; //Tunisia
-
-  private initMap():void{
-    this.map=L.map('map',{
-      center:this.centroid,
-      zoom:12
-    });
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(this.map);
-
-    
-
-  }
+ 
 
 
 }

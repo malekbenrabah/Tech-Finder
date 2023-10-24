@@ -1,0 +1,151 @@
+<div>
+    <div nz-row [nzGutter]="8" >
+        <!--search-->
+        <div nz-col [nzSpan]="6">
+            <h2 class="filter-search">Filter Search</h2>
+            <form [formGroup]="searchForm" >
+
+                <div class="search-type">
+                    <p class="search-type-txt"><fa-icon [icon]="myJob" class="search-icon"></fa-icon>Category</p>
+                   
+
+                    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a Job Type" formControlName="selectedJobType" class="search-select">
+                        <nz-option  nzLabel="category" nzValue="catefory"></nz-option>
+                    </nz-select>
+                </div>
+
+                <div nz-row>
+                    <hr class="search-hr">
+                </div>
+
+                <div class="search-type">
+                    <p class="search-type-txt"><fa-icon [icon]="myBuildingIcon" class="search-icon" ></fa-icon>Brand</p>
+                    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a brand" formControlName="selectedJobLevel" class="search-select">
+                        <nz-option *ngFor="let brand of brands" [nzLabel]="brand.name" [nzValue]="brand.id"></nz-option>
+                    </nz-select>
+                </div>
+                
+                <div nz-row>
+                    <hr class="search-hr">
+                </div>
+                
+                <div class="search-type-slider">
+                    <p class="search-radio-txt"><i nz-icon nzType="thunderbolt" nzTheme="outline"></i>Price</p>
+                    <nz-slider
+                        nzRange
+                        [nzStep]="10"
+                        [(ngModel)]="rangeValue"
+                        (ngModelChange)="onChange($event)"
+                        (nzOnAfterChange)="onAfterChange($event)"    
+                    ></nz-slider>
+
+
+                </div>
+            </form>
+            
+
+            
+
+        </div>
+        <!--search-->
+
+        
+        <div nz-col [nzSpan]="18">
+            <div nz-row>
+                <div nz-col nzFlex="500px">
+                  <p>Showing : <span class="jobs-num">{{numProd}}</span> Jobs Available</p>
+                </div>
+                <div nz-col nzFlex="auto">
+                </div>
+                <!--
+                <div nz-col nzSpan="24" *ngIf="checkSearch===false">
+                    <nz-alert nzType="error" nzMessage="There are no job matching your search." class="no-search-alert"></nz-alert>
+                </div>
+                -->
+                
+            </div>
+
+           
+            <!--cards-->
+            
+            <div nz-row *ngFor="let product of products.slice(startIndex, endIndex)">
+
+                <nz-card  [nzActions]="[viewMore, applyQuick]"  >
+                    
+                    <nz-card-meta
+                    [nzAvatar]="avatarTemplate"
+                    [nzTitle]="titleCard"
+                    [nzDescription]="descriptionTmpl"
+                    ></nz-card-meta>
+
+                    
+                    
+                </nz-card>
+                <ng-template #avatarTemplate> 
+                    <img alt="photo" [src]="product.photos[0].path"  *ngIf="product.photos.length!==0" class="img-product"/>
+                    <img nz-image nzSrc="error" [nzFallback]="fallback" alt="photo"  *ngIf="product.photos.length===0"/> 
+                </ng-template>
+
+                <ng-template #titleCard>
+                    <p class="job-title">{{product.name}}</p>
+                    <div class="job-location-title">
+                        <p>{{formatDate(product.created_at)}}</p> 
+                    </div>
+                </ng-template>
+
+                <ng-template #descriptionTmpl>
+    
+                    <p class="card-description" *ngIf="product.description.length<50">{{product.description}}</p>
+                    <p class="card-description" *ngIf="product.description.length>50">{{product.description.slice(0,50)}}...</p>
+                    <div nz-row  class="card-footer">
+                        <div nz-col [nzSpan]="12">
+                            <div class="job-type-container">
+                                <p class="job-type">{{product.brandId}}</p>
+                            </div>
+                        </div>
+
+                        <div nz-col [nzSpan]="12">
+                            <div class="job-date-container">
+                                <p class="price-txt">{{product.price}} DT</p>
+                            </div>
+                        </div>
+                    </div>       
+
+                </ng-template>
+    
+                <ng-template #viewMore>
+                    <a routerLink="/job-detail/{{product.id}}"><i nz-icon nzType="eye" nz-tooltip nzTooltipTitle="View more"></i></a>
+                </ng-template>
+    
+                <ng-template #applyQuick>
+
+                    <i nz-icon nzType="shopping-cart"  nz-tooltip nzTooltipTitle="Buy" nzTheme="outline"></i>
+
+                </ng-template>
+    
+                
+            </div>
+
+
+
+    
+           
+            
+            
+        </div>
+        <!--cards-->
+         
+    </div>
+
+    <!--pagination-->
+    <div nz-row>
+        <div nz-col nzSpan="12" nzOffset="6">
+    
+            <div class="pagination">
+                <nz-pagination [nzPageIndex]="currentPage" [nzPageSize]="itemsPerPage" [nzTotal]="totalItems" (nzPageIndexChange)="currentPage = $event"></nz-pagination>
+            </div>
+           
+        </div>
+    </div>
+    
+</div>

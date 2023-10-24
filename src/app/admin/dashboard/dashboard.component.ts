@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { faBuilding} from '@fortawesome/free-regular-svg-icons';
-import { faBriefcase, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faBox, faBoxOpen, faBriefcase, faUser } from '@fortawesome/free-solid-svg-icons';
 import { Chart } from 'chart.js/auto';
+import { AuthService } from 'src/app/services/auth-service';
 import { JobService } from 'src/app/services/jobs/job.service';
+import { ProductService } from 'src/app/services/product/product.service';
+import { Brand } from 'src/app/services/user/model/Brand';
 import { Job } from 'src/app/services/user/model/Job';
+import { Product } from 'src/app/services/user/model/Product';
 import { User } from 'src/app/services/user/model/user';
 import { UserServiceService } from 'src/app/services/user/user-service.service';
 
@@ -14,10 +19,10 @@ import { UserServiceService } from 'src/app/services/user/user-service.service';
 })
 export class DashboardComponent implements OnInit {
 
-  jobsIcon=faBriefcase;
+  jobsIcon=faBoxOpen;
   userIcon=faUser;
   companyIcon=faBuilding;
-  constructor(private userService:UserServiceService, private jobService:JobService) { }
+  constructor(private userService:UserServiceService, private jobService:JobService, private authService:AuthService, private router:Router, private prodictService:ProductService) { }
 
   companies:User[]=[];
   nbCompanies!:number;
@@ -29,8 +34,23 @@ export class DashboardComponent implements OnInit {
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
-  jobs:Job[]=[];
+  jobs:Product[]=[];
   ngOnInit(): void {
+    if(!this.authService.isAuthenticated()) {
+      this.authService.login();
+    }
+
+    this.prodictService.getProducts().subscribe((res)=>{
+      var products:Product[]=[];
+      products = res as Product[];
+      this.nbJobs=products.length;
+    });
+
+    this.prodictService.getBrands().subscribe((res)=>{
+      var brands:Brand[]=[];
+      brands = res as Brand[];
+      this.nbUsers=brands.length;
+    });
     
     this.userService.getCompanies().subscribe((response)=>{
       console.log('companies',response);
@@ -38,19 +58,15 @@ export class DashboardComponent implements OnInit {
       this.nbCompanies=this.companies.length;
     });
 
-    this.userService.getNbUser().subscribe((response)=>{
-      this.nbUsers=response as number;
-    });
+   
 
-    this.jobService.nbJobs().subscribe((response)=>{
-      this.nbJobs=response as number;
-    });
+   
 
     
 
     /*monthly jobs chart*/
 
-    this.jobService.getJobsByMonth().subscribe((response)=>{
+    this.prodictService.getProductsByMonth().subscribe((response)=>{
       console.log('jobs by month', response);
       this.jobsMonth=response as any[];
       const months = this.monthMapping;
@@ -66,7 +82,7 @@ export class DashboardComponent implements OnInit {
         data: {
           labels: months,
           datasets: [{
-            label: 'nb.Jobs',
+            label: 'nb.Products',
             data: jobData,
             backgroundColor: [
               'rgba(255, 99, 132, 0.2)',
@@ -140,7 +156,10 @@ export class DashboardComponent implements OnInit {
 
     });
 
-    /*jobs by job type chart*/
+
+
+    /*products by brand*/
+    /*
     this.jobService.getJobsByJobtype().subscribe((response)=>{
       console.log('jobs by job type', response);
       this.jobTypeJobs=response as any[];
@@ -167,46 +186,85 @@ export class DashboardComponent implements OnInit {
       });
   
     });
+    */
+
+    this.prodictService.getAllBrandsProducts().subscribe((response)=>{
+      console.log('all brand products', response);
+
+      const data = response as Array<{ name: string, productCount: number }>;
+      const brandNames = data.map(item => item.name);
+      const productCounts = data.map(item => item.productCount);
+
+      new Chart('jobTypeChart',{
+        type:'bar',
+        data: {
+          labels: brandNames,
+          datasets: [
+            {
+              label: 'nb.Products',
+              data: productCounts,
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 205, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(201, 203, 207, 0.2)'
+              ],
+              borderColor: [
+                'rgb(255, 99, 132)',
+                'rgb(255, 159, 64)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+                'rgb(54, 162, 235)',
+                'rgb(153, 102, 255)',
+                'rgb(201, 203, 207)'
+              ],
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      })
+    });
+
+  
 
    /*recent jobs*/
-   this.jobService.getJobs().subscribe((response)=>{
-    console.log("jobs listings", response);
-    this.jobs=response as Job[];
-  });
+    this.prodictService.getProducts().subscribe((response)=>{
+      console.log("jobs listings", response);
+      this.jobs=response as Product[];
+    });
 
 
   }
 
+  
   //formatting the date
-  formatDate(created_at: any[]): string {
-
-    const year = created_at[0];
-    const month = created_at[1] - 1; // Months in JavaScript are 0-based
-    const day = created_at[2];
-    const hours = created_at[3];
-    const minutes = created_at[4];
-    const seconds = created_at[5];
-
-    const createdAt = new Date(year, month, day, hours, minutes, seconds);
-
+  formatDate(created_at: string): string {
+    const timestamp = new Date(created_at);
     const now = new Date();
-    const elapsed = now.getTime() - createdAt.getTime();
-
+    const elapsed = now.getTime() - timestamp.getTime();
+  
     if (elapsed < 60000) {
       return 'Just now';
     } else if (elapsed < 3600000) {
       const minutes = Math.floor(elapsed / 60000);
-      return `${minutes} minutes ago`;
+      return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
     } else if (elapsed < 86400000) {
       const hours = Math.floor(elapsed / 3600000);
-      return `${hours} hours ago`;
+      return `${hours} hour${hours > 1 ? 's' : ''} ago`;
     } else {
-      const year = createdAt.getFullYear();
-      const month = String(createdAt.getMonth() + 1).padStart(2, '0');
-      const day = String(createdAt.getDate()).padStart(2, '0');
+      const dateFormatter = new Intl.DateTimeFormat('en', { year: 'numeric', month: '2-digit', day: '2-digit' });
+      const [{ value: day },,{ value: month },,{ value: year }] = dateFormatter.formatToParts(timestamp);
       return `${day}-${month}-${year}`;
     }
-    
   }
-
 }

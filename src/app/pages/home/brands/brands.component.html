@@ -1,0 +1,47 @@
+<div class="companies-container">
+    <div nz-row >
+        <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="24" class="search-container">
+            <h3>Browse Brands</h3>
+            <p>Discover our brands</p>
+           
+            <nz-input-group [nzSuffix]="suffixIconSearch" class="search-input-grp">
+                <input type="text" nz-input  [(ngModel)]="search" (keyup)="searchCompany()" placeholder="search for brands" class="search-input"/>
+            </nz-input-group>
+            <ng-template #suffixIconSearch>
+                <i nz-icon nzType="search"  class="search-icon"></i>
+            </ng-template>
+
+        </div>
+    </div>
+    
+    <div nz-row>
+        <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="24" class="comapnies-number-container" >
+            <p>Showning <span>{{serachBrands.length}}</span> brands</p>
+            <hr class="companies-hr">
+        </div>
+    </div>
+
+    <div nz-row>
+        <div nz-col [nzXs]="24" [nzSm]="8" [nzMd]="6" [nzLg]="6" *ngFor="let brand of serachBrands.slice(startIndexSearch, endIndexSearch) ">
+            <nz-card class="company-card">
+                <div class="card-container">
+                   
+                    <nz-avatar   [nzSrc]="brand.photo" [nzShape]="'square'" [nzSize]="64" class="company-avatar" *ngIf="brand.photo!==null"></nz-avatar>
+                    <nz-avatar  nzIcon="user" [nzShape]="'square'" [nzSize]="64" class="company-avatar" *ngIf="brand.photo===null"></nz-avatar>
+
+                    <a class="company-name-txt">{{brand.name}}</a>
+                    <a routerLink="/company-detail" nzType="link" class="view-btn" (click)="searchJob(brand.id)">View Products</a>
+                </div>
+            </nz-card>
+        </div>
+    </div>
+    <div nz-row>
+        <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="24">
+    
+            <div class="pagination">
+                <nz-pagination [nzPageIndex]="currentPageSearch" [nzPageSize]="itemsPerPageSearch" [nzTotal]="totalItemsSearch" (nzPageIndexChange)="currentPageSearch = $event"></nz-pagination>
+            </div>
+        
+        </div>
+    </div>
+</div>

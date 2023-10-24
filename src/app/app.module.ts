@@ -34,6 +34,8 @@ function initializeKeycloak(keycloak: KeycloakService) {
         checkLoginIframe: true,
         redirectUri:''
       },
+      enableBearerInterceptor: true,
+      bearerExcludedUrls: ['/api/products/getProducts','/api/products/search','/api/products/findById','/api/brands/getBrands','/api/brands/findById','/api/products/similarProducts','/api/products/getProdByMonth','/api/brands/getAllBrandsProducts','/api/products/delete','/api/products/addProduct','/api/products/deletePhoto','/api/products/updatePhoto'],
     });
 }
 

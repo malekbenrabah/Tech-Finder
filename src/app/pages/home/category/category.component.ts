@@ -7,6 +7,8 @@ import { JobService } from 'src/app/services/jobs/job.service';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs';
+import { ProductService } from 'src/app/services/product/product.service';
+import { Product } from 'src/app/services/user/model/Product';
 @Component({
   selector: 'app-category',
   templateUrl: './category.component.html',
@@ -16,7 +18,7 @@ export class CategoryComponent implements OnInit {
 
   rightIcon=faChevronRight;
   leftIcon=faChevronLeft;
-  constructor(private jobService:JobService, private sharedService:SharedService, private router:Router) { }
+  constructor(private productService:ProductService,private jobService:JobService, private sharedService:SharedService, private router:Router) { }
 
  
 
@@ -96,7 +98,7 @@ export class CategoryComponent implements OnInit {
 
 
  
-  searchResult:Job[]=[];
+  searchResult:Product[]=[];
   ngOnInit(): void {
 
     for (let i = 0; i < this.numSlides; i++) {
@@ -110,7 +112,7 @@ export class CategoryComponent implements OnInit {
   }
 
   search(sector:string){
-    this.jobService.searchJobs(undefined,undefined,undefined,undefined,undefined,sector,undefined,undefined)
+    this.productService.search(undefined,undefined,sector,undefined,undefined)
     .pipe(
       tap((response) => {
         console.log('search response', response);

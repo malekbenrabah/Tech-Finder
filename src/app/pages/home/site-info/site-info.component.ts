@@ -5,6 +5,8 @@ import { UserServiceService } from 'src/app/services/user/user-service.service';
 import { User } from 'src/app/services/user/model/user';
 import { NgIf } from '@angular/common';
 import { JobService } from 'src/app/services/jobs/job.service';
+import { ProductService } from 'src/app/services/product/product.service';
+import { Product } from 'src/app/services/user/model/Product';
 
 @Component({
   selector: 'app-site-info',
@@ -14,7 +16,7 @@ import { JobService } from 'src/app/services/jobs/job.service';
 export class SiteInfoComponent implements OnInit {
 
 
-  constructor(private userService:UserServiceService, private jobService:JobService) { }
+  constructor( private productService:ProductService) { }
 
 
   companies:User[]=[];
@@ -26,8 +28,12 @@ export class SiteInfoComponent implements OnInit {
 
   nbMaxJobs:number=100;
   nbJobs:number=0;
+  products:Product[]=[];
   ngOnInit(): void {
-    
+   this.productService.getProducts().subscribe(response=>{
+    this.products=response as Product[];
+    this.nbMaxJobs=this.products.length;
+   });
   }
 
 

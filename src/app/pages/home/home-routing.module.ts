@@ -10,6 +10,8 @@ import { LoggedInGuard } from 'src/app/services/guards/loggedIn/logged-in.guard'
 import { AdminGuard } from 'src/app/services/guards/admin/admin.guard';
 import { CompaniesComponent } from './companies/companies.component';
 import { CompanyDetailComponent } from './company-detail/company-detail.component';
+import { BrandsComponent } from './brands/brands.component';
+import { JobList2Component } from './job-list2/job-list2.component';
 
 const routes: Routes = [
    
@@ -19,6 +21,7 @@ const routes: Routes = [
     {path:"job-list",component:JobListComponent},
     {path:"job-grid",component:JobGridComponent},
     {path:"companies",component:CompaniesComponent},
+    {path:"brands",component:BrandsComponent},
     {path:"company-detail",component:CompanyDetailComponent},
     {path:"account" , loadChildren:()=>import("../account/account.module").then(module=>module.AccountModule)},
 

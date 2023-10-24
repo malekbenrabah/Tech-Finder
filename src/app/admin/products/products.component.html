@@ -1,0 +1,266 @@
+<div class="users-container">
+    <div nz-row [nzGutter]="20">
+        <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="16" [nzLg]="16">
+            <div class="job-search">
+                <input nz-input  placeholder="Search for product"  class="job-search-input" [(ngModel)]="search" (keyup)="searchUser()"/>
+                <button nz-button  [nzType]="'primary'" class="job-serach-btn"><i nz-icon nzType="search" ></i></button>
+
+            </div>
+        </div>
+
+        <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="8" [nzLg]="8" >
+            <button nz-button nzType="primary" class="apply-btn" (click)="addJobModal()">Add Product</button>
+            
+            <!--ADD JOB MODAL-->
+            <nz-modal
+                [(nzVisible)]="jobModal"
+                nzTitle="Add a product"
+                nzCentered
+                (nzOnCancel)=" handleCancelJobModal()"
+                (nzOnOk)="handleOkJobModal()"
+                [nzFooter]="null" >
+                <ng-container *nzModalContent>
+                
+                <div nz-row>
+                    <div nz-col nzSpan="24">
+                    
+                        <div >
+                            
+                            <form nz-form nzLayout="vertical" [formGroup]="productForm" >
+                                <div nz-row nzGutter="8">
+        
+                                    <div nz-col nzSpan="12">
+                                        <nz-form-item>
+                                            <nz-form-label nzSpan="vertical" class="form-label" >Name</nz-form-label>
+                                            <nz-form-control nzSpan="vertical" nzErrorTip="Please input a name">
+                                                <input nz-input formControlName="name" class="form-input-job"  placeholder="Name"  />
+                                            </nz-form-control>
+                                        </nz-form-item>
+                                    </div>
+
+                                    <div nz-col nzSpan="12">
+                                        <nz-form-item>
+                                            <nz-form-label nzSpan="vertical" class="form-label" >Price</nz-form-label>
+                                            <nz-form-control nzSpan="vertical" nzErrorTip="Please input a price">
+                                                <input nz-input formControlName="price" class="form-input-job"  placeholder="Price"  />
+                                            </nz-form-control>
+                                        </nz-form-item>
+                                    </div>
+                                </div>
+
+                                <div nz-row nzGutter="8">
+        
+                                    <div nz-col nzSpan="12">
+                                        <nz-form-item>
+                                            <nz-form-label nzSpan="vertical" class="form-label">Brand</nz-form-label>
+                                            <nz-form-control nzSpan="vertical"  nzErrorTip="Please select a brand" >
+                                                <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a brand" formControlName="selectedBrand" class="search-select">
+                                                    <nz-option *ngFor="let brand of brands" [nzLabel]="brand.name" [nzValue]="brand.id"></nz-option>
+                                                </nz-select>
+                                            </nz-form-control>
+                                        </nz-form-item>
+                                    
+                                    </div>
+                                    <div nz-col nzSpan="12">
+                                        <nz-form-item>
+                                            <nz-form-label nzSpan="vertical" class="form-label">Category</nz-form-label>
+                                            <nz-form-control nzSpan="vertical"  nzErrorTip="Please select a category" >
+                                                <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a category" formControlName="selectedCategory" class="search-select">
+                                                    <nz-option *ngFor="let brand of brands" [nzLabel]="brand.name" [nzValue]="brand.id"></nz-option>
+                                                </nz-select>
+                                            </nz-form-control>
+                                        </nz-form-item>
+                                    
+                                    </div>
+                                </div>
+
+                                <div nz-row>
+                                    <div nz-col nzSpan="24">
+                                        <nz-form-item>
+                                            <nz-form-label nzSpan="vertical" class="form-label">Description</nz-form-label>
+                                            <nz-form-control nzSpan="vertical" >
+                                                <textarea rows="4" nz-input formControlName="description" class="form-input about-input-job" placeholder="Write something about your company.." ></textarea>
+                                            </nz-form-control>
+                                        </nz-form-item>
+                                    </div>
+                                </div>
+
+                                <div nz-row>
+                                    <div nz-col nzSpan="24">
+                                       <div class="clearfix">
+                                            <nz-upload
+                                                class="upload-list-inline"
+                                                nzAction="http://localhost:8086/api/products/addProduct"
+                                                nzListType="picture"
+                                                [(nzFileList)]="fileList2"
+                                            >
+                                                <button nz-button>
+                                                <span>
+                                                    <i nz-icon nzType="upload"></i>
+                                                    Upload
+                                                </span>
+                                                </button>
+                                            </nz-upload>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div nz-row>
+                                    <button nz-button nzType="primary" class="apply-btn" (click)="addProduct()">Add Product</button>
+                                </div>
+
+                            
+                                
+                            </form>
+                        </div>
+                    </div>
+                        
+                </div>
+                
+                </ng-container>
+            </nz-modal>
+            <!--ADD JOB MODAL-->
+
+        </div>
+    </div>
+
+    <div nz-row class="user-tabs">
+        <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="24">
+            <nz-table #basicTable [nzData]="searchProducts" 
+            [nzTotal]="totalProducts"
+            [nzPageSize]="itemsPerPageprod"
+            [nzPageIndex]="currentPageprod"
+            [nzSize]="'middle'"
+            
+            >
+                <thead>
+                  <tr>
+                    <th nzLeft>ID</th>
+                    <th nzLeft>Name</th>
+                    <th>Price</th>
+                    <th>Created at</th>
+                    <th>Actions</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let data of basicTable.data">
+                    <td nzLeft>{{ data.id }}</td>
+                    <td nzLeft>{{ data.name }}</td>
+                    <td>{{ data.price }} DT</td>
+                    <td >{{formatDate(data.created_at)}}</td>
+                    <td>
+                        <button nz-button nzType="default"  nz-tooltip nzTooltipTitle="View More" nzTooltipPlacement="left" class="view-btn" (click)="viewMoreModal(data.id)"><i nz-icon nzType="eye" nzTheme="outline"></i></button>
+                        <!--VIEW MODAL-->
+                            <nz-modal
+                            [(nzVisible)]="viewModal"
+                            nzTitle="View Product Detailes"
+                            (nzOnCancel)="handleCanceViewlModal()"
+                            (nzOnOk)="handleOkViewModal()"
+                            [nzFooter]="null" 
+                            nzWidth="1000px">
+                            <ng-container *nzModalContent>
+                                <form nz-form nzLayout="vertical" [formGroup]="productForm">
+                                    <div nz-row [nzGutter]="8">
+                    
+                                        <div nz-col [nzSpan]="12">
+                                            <nz-form-item>
+                                                <nz-form-label nzSpan="vertical" class="form-label">Name</nz-form-label>
+                                                <input nz-input  placeholder="Title" formControlName="name"   class="form-input"/>
+                                            </nz-form-item> 
+                                        </div>
+
+                                        <div nz-col [nzSpan]="12">
+                                            <nz-form-item>
+                                                <nz-form-label nzSpan="vertical" class="form-label">Price</nz-form-label>
+                                                <nz-form-control nzSpan="vertical" >
+                                                    <input nz-input formControlName="price"  placeholder="Experience" class="form-input" />
+                                                </nz-form-control>
+                                            </nz-form-item>
+                        
+                                        </div>
+
+                                    </div>
+                        
+                                    
+                                    <div nz-row nzGutter="8">
+        
+                                        <div nz-col nzSpan="12">
+                                            <nz-form-item>
+                                                <nz-form-label nzSpan="vertical" class="form-label">Brand</nz-form-label>
+                                                <nz-form-control nzSpan="vertical" nzErrorTip="Please select a brand">
+                                                    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a brand" formControlName="selectedBrand" class="search-select">
+                                                        <nz-option *ngFor="let brand of brands" [nzLabel]="brand.name" [nzValue]="brand.id"></nz-option>
+                                                    </nz-select>
+                                                </nz-form-control>
+                                            </nz-form-item>
+                                        
+                                        </div>
+                                        <div nz-col nzSpan="12">
+                                            <nz-form-item>
+                                                <nz-form-label nzSpan="vertical" class="form-label">Category</nz-form-label>
+                                                <nz-form-control nzSpan="vertical" nzErrorTip="Please select a brand">
+                                                    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a brand" formControlName="selectedBrand" class="search-select">
+                                                        <nz-option *ngFor="let brand of brands" [nzLabel]="brand.name" [nzValue]="brand.id"></nz-option>
+                                                    </nz-select>
+                                                </nz-form-control>
+                                            </nz-form-item>
+                                        
+                                        </div>
+                                    </div>
+                                    
+                        
+                                   
+
+                                    <div nz-row>
+                                        <div nz-col [nzSpan]="24">
+                                            <nz-form-item>
+                                                <nz-form-label nzSpan="vertical" class="form-label">Description</nz-form-label>
+                                                <textarea rows="4" nz-input  formControlName="description"  class="form-input about-input"></textarea>
+                                            </nz-form-item>
+                                        </div>
+                        
+                                    </div>
+
+
+                                    <div nz-row>
+                                        <div nz-col nzSpan="24">
+                                            <input type="file" (change)="onFileSelected($event, product.id)"  #fileInput/>
+                                        </div>
+                                    </div>
+
+                                   <div nz-row>
+
+                                        <div nz-col nzSpan="8" *ngFor="let photo of product.photos">
+                                            <div class="photo-container">
+                                                <img [src]="photo.path" class="img-view"/>
+                                                <button nz-button nzType="default" nzShape="circle" (click)="deletePhoto(product.id,photo.id)" class="delete-button">
+                                                    <i nz-icon nzType="delete"></i>
+                                                </button>
+                                            </div>
+                                            
+                                        </div>
+                                   </div>
+
+
+                                    <div nz-row>
+                                        <button nz-button nzType="primary" class="apply-btn" (click)="updateProduct()">Update Product</button>
+                                    </div>
+
+                                   
+                        
+        
+                                </form>
+                            </ng-container>
+                            </nz-modal>
+                        <!--VIEW MODAL-->
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <button nz-button nzType="default"  nz-tooltip nzTooltipTitle="Delete Company" nzTooltipPlacement="left" class="delete-btn" (click)="deleteProduct(data.id)"><fa-icon [icon]="deleteIcon"></fa-icon></button>
+                    </td>
+                  </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </div>
+
+</div>

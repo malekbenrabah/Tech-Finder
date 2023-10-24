@@ -2,8 +2,8 @@
     <div nz-row>
 
         <nz-carousel nzAutoPlay>
-            <div nz-carousel-content *ngFor="let index of array">
-              <h3>{{ index }}</h3>
+            <div nz-carousel-content *ngFor="let photo of product.photos">
+              <img alt="photo" [src]="photo.path"  class="product-img" (click)="onClickImg()"/>
             </div>
         </nz-carousel>
     </div>
@@ -12,14 +12,18 @@
         
         <div nz-col nzSpan="18" >
             <div nz-row>
-                <h3 class="job-title">Title</h3>
+                <h3 class="job-title">{{product.name}}</h3>
             </div>
 
             <div nz-row>
                 <div class="job-info-txt">
-                    <fa-icon [icon]="myJob" class="job-info-icon"></fa-icon>
-                    <span >Full Time</span>
-                    <fa-icon [icon]="cretedatIcon" class="job-info-icon"></fa-icon><span>17-02-1999</span>
+                    <div>               
+                        <span *ngIf="product.brandPhoto===null">{{product.brandName}}</span>
+                        <img [src]="product.brandPhoto" *ngIf="product.brandPhoto!==null" class="brand-img"/>
+                    </div>
+                    <div>
+                        <fa-icon [icon]="cretedatIcon" class="job-info-icon"></fa-icon><span class="created_at_product">{{formatDate(product.created_at)}}</span>
+                    </div>
                 </div>
 
             </div>
@@ -27,10 +31,10 @@
 
         <div nz-col nzSpan="6" class="btn-container">
             <div nz-row>
-                <p>17-02-1999</p>
+               <p class="price-txt">{{product.price}} DT</p>
             </div>
             <div nz-row>
-                <button nz-button nzType="primary" class="apply-btn" (click)="applyJob(job.id)">Apply Now</button>
+                <button nz-button nzType="primary" class="apply-btn" >Buy now</button>
             </div>
         </div>
        
@@ -45,57 +49,32 @@
         <div nz-col nzFlex="750px">
             <div nz-row>
                 <nz-card class="job-detailes-card">
-                    <h5>Job Info</h5>
+                    <h5>Product Info</h5>
                     <hr class="border-card">
                     <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
                         <div nz-col class="gutter-row" [nzSpan]="12">
                             <div nz-row class="inner-box">
-                                <fa-icon [icon]="myBuildingIcon" class="job-info-icon"></fa-icon><span>Industry</span>
-                            <p>indusrty</p>
+                                <fa-icon [icon]="myBuildingIcon" class="job-info-icon"></fa-icon><span>Brand</span>
+                                <p>{{product.brandName}}</p>
                             </div>
                             <div nz-row class="inner-box">
-                                <fa-icon [icon]="myJob" class="job-info-icon"></fa-icon><span>Job Type</span>
-                                <p>Full Time</p>
+                                <fa-icon [icon]="myJob" class="job-info-icon"></fa-icon><span>Price</span>
+                                <p>{{product.price}} DT</p>
                              
                             </div>
-
-                            <div nz-row class="inner-box">
-                                <fa-icon [icon]="cretedatIcon" class="job-info-icon"></fa-icon><span>Published</span>
-                                <p>17-02-1999</p>
-                            </div>
-
-                            <div nz-row class="inner-box">
-                                <fa-icon [icon]="myLocationIcon" class="job-info-icon"></fa-icon><span>Location</span>
-                                <p>Location</p>
-                            </div>  
-                        
                         </div>
 
                         <div nz-col class="gutter-row" [nzSpan]="12">
-                        
 
                             <div nz-row class="inner-box">
-                                <fa-icon [icon]="jobLevelIcon" class="job-info-icon"></fa-icon><span>Job Level</span>
-                            <p>job Level</p>
-                            </div>
-                            <div nz-row class="inner-box">
-                                <fa-icon [icon]="experienceIcon" class="job-info-icon"></fa-icon><span>Experience</span>
-                                <p >No experience</p>
-                                
+                                <fa-icon [icon]="cretedatIcon" class="job-info-icon"></fa-icon><span>Published</span>
+                                <p>{{formatDate(product.created_at)}}</p>
                             </div>
 
                             <div nz-row class="inner-box">
-                            <fa-icon [icon]="deadlineIcon" class="job-info-icon"></fa-icon><span>Deadline</span>
-                            <p>17-02-1999</p>
-                            </div>
-
-                            <div nz-row class="inner-box">
-                                <fa-icon [icon]="usersIcon" class="job-info-icon"></fa-icon><span>No. of Applicants</span>
-                                <p>25</p>
-                            </div>
-
-                            
-
+                                <fa-icon [icon]="myLocationIcon" class="job-info-icon"></fa-icon><span>Category</span>
+                                <p>category</p>
+                            </div>  
                             
                         </div>
                         
@@ -105,20 +84,8 @@
 
             <div nz-row>
                 <div class="job-desc-detailes">
-                    <h3>About Company</h3>
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Accusantium alias, ipsa nulla, minus fugiat nisi, iure laudantium incidunt explicabo ex nostrum ducimus! Officia vel laboriosam natus minus accusamus illum quisquam!</p>
-                </div>
-            </div>
-
-            <div nz-row>
-                <div class="job-desc-detailes">
-                    
-                    <h3>Requirements</h3>
-                    <p >No sepcified requirements </p>
-                    <ul>
-                        <li>skill</li>
-                    </ul>
-                    
+                    <h3>Description</h3>
+                    <p>{{product.description}}</p>
                 </div>
             </div>
         </div>
@@ -126,48 +93,14 @@
         <div nz-col nzFlex="auto">
 
             <div nz-row>
-                <nz-card class="company-info-card">
-                    <nz-card-meta
-                      [nzAvatar]="avatarTemplate"
-                      [nzTitle]="companyName"
-                      [nzDescription]="cardDescription"
-                    ></nz-card-meta>
-                     <div class="map-container">
-                        <div class="map-frame">
-                            <div id="map">
-                               
-                            </div>
-                        </div>
-                     </div>
-                </nz-card>
-                <ng-template #avatarTemplate>
-                    <nz-avatar [nzSize]="64" [nzShape]="'square'" nzIcon="user" ></nz-avatar>
-                </ng-template>
-
-                <ng-template #companyName>
-                    <p><a routerLink="/" class="company-name">company name</a></p>
-                   <div class="companyName">
-                    <fa-icon [icon]="myJob" nz-tooltip nzTooltipTitle="Open Jobs" class="job-icon"></fa-icon> <a routerLink="" class="open-jobs-link"> 10 Open jobs</a> 
-                   </div>
-                </ng-template>
-
-                <ng-template #cardDescription>
-                    <div class="card-description">
-                        <p><fa-icon [icon]="companyEmailIcon" class="job-info-icon"></fa-icon>email@gmail.com</p>
-                    </div>
-                </ng-template>
-
-            </div>
-
-            <div nz-row class="similar-jobs">
-
+               
                 <nz-card class="job-detailes-card">
-                    <h5>Similar job Post</h5>
+                    <h5>Similar products</h5>
                     <hr class="border-card">
 
                     <div class="similar-job">
 
-                        <div nz-row >
+                        <div nz-row *ngFor="let smilarProduct of similarProducts | slice:0:4">
                             <div nz-col nzSpan="24">
                                
                                 <nz-card  [nzBordered]="false" >
@@ -178,21 +111,35 @@
                                     ></nz-card-meta>
         
                                     <ng-template #avatarTemplate>
-                                        <nz-avatar [nzSize]="64" [nzShape]="'square'" nzIcon="user" ></nz-avatar>
+                                        <div class="product-photo-container">
+                                            <img alt="photo" [src]="smilarProduct.photos[0].path"  *ngIf="smilarProduct.photos.length!==0" class="product-photo"/>
+                                            <img nz-image nzSrc="error" [nzFallback]="fallback" alt="photo"  *ngIf="smilarProduct.photos.length===0"  class="product-photo"/> 
+                                        </div>
                                     </ng-template>
 
                                     <ng-template #companyName>
-                                        <p><a routerLink="/job-detail/1" class="similar-job-title">Title</a></p>
+                                        <div class="similar-job-title-container">
+                                            <p><a routerLink="/job-detail/1" class="similar-job-title">{{smilarProduct.name}}</a></p>
+
+                                            <div class="similar-btn-container">
+                                                <button nz-button nzType="primary" class="apply-btn-similar"  nz-tooltip nzTooltipTitle="Buy Now"><i nz-icon nzType="shopping-cart" nzTheme="outline"></i></button>
+                                                <button nz-button nzType="primary" class="apply-btn-similar view"  nz-tooltip nzTooltipTitle="View pictures"  (click)="onClick(smilarProduct.id)"><i nz-icon nzType="camera" nzTheme="outline"></i></button>
+                                            </div>
+                                            
+                                        </div>
+
                                         <div class="similar-job-detail">
 
-                                            
                                             <div class="jobType-container">
-                                                <fa-icon [icon]="myJob"></fa-icon>
-                                                <span *ngIf="job.jobType==='Full_Time'">Full Time</span>
-                                                <fa-icon [icon]="cretedatIcon"></fa-icon><span>17-02-1999</span>
+                                                <fa-icon [icon]="myJob"></fa-icon><span>{{smilarProduct.price}} DT</span>
+                            
+                                                <fa-icon [icon]="cretedatIcon"></fa-icon><span>{{formatDate(smilarProduct.created_at)}}</span>
 
                                             </div>
                                         </div>
+
+                                        
+
                                     </ng-template>
                     
                                     
@@ -211,10 +158,10 @@
 
 
                 </nz-card>
-                
 
             </div>
 
+            
             
 
         </div>

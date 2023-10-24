@@ -33,24 +33,25 @@
 }
 
 .latest-job-card{
-    width: 332px;
-    max-width: 332px;
     border-radius: 10px;
     transition: all .3s ease 0s;
-}
-
-nz-card-meta{
-   height: 120px;
+    
 }
 
 .latest-job-card:hover{
     transform: translateY(-5px);
 }
 
+nz-card-meta{
+   max-height: 120px;
+}
+
+
+
 
 .card-footer{
-    margin-top: 25px;
-    margin-bottom: -25px;
+    margin-top: 15px;
+    margin-bottom: -15px;
 }
 .job-type-container{
     display: flex;
@@ -90,6 +91,22 @@ nz-card-meta{
     font-size: 14px;
     color: #4F5E64;
     margin-top: -15px;
+}
+
+.product-price{
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: 600;
+}
+
+.product-photo-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-photo{
+    width: 200px;
+    height: 200px;
 }
 
 /*end card*/

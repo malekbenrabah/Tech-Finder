@@ -1,4 +1,5 @@
 import { inject, Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { KeycloakService } from 'keycloak-angular';
 import { from, Observable } from 'rxjs';
 
@@ -13,7 +14,7 @@ export interface AuthConfig {
 export class AuthService {
   keycloak = inject(KeycloakService);
 
-  constructor() {
+  constructor(private router:Router) {
     this.keycloak.isLoggedIn().then((loggedIn) => {
       if (loggedIn) {
         this.keycloak.getKeycloakInstance().loadUserProfile();
@@ -26,9 +27,8 @@ export class AuthService {
   }
 
   login() {
-    this.keycloak
-      .login({ redirectUri: 'http://localhost:4200' })
-      .then();
+    return this.keycloak
+      .login({ redirectUri: "http://localhost:4200" })
   }
 
   isLoggedIn(): Promise<boolean> {

@@ -13,6 +13,7 @@ export class AuthenticationGuard extends KeycloakAuthGuard {
     super(router, keycloak);
   }
 
+  adminRole:string="ADMIN";
   public async isAccessAllowed(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot

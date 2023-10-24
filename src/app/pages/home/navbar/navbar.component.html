@@ -5,9 +5,11 @@
     </div>
 
     <ul nz-menu nzTheme="dark" nzMode="horizontal" *ngIf="!isSmallScreen">
-        <li nz-menu-item><a routerLink="/job-list">Products</a></li>
-        <li nz-menu-item><a routerLink="/companies">Categories</a></li>
-        <li nz-menu-item><a routerLink="">About Us</a></li>
+      <li nz-menu-item><a routerLink="/job-list">Products</a></li>
+      <li nz-menu-item><a routerLink="/companies">Categories</a></li>
+      <li nz-menu-item><a routerLink="/brands">Brands</a></li>
+
+      <li nz-menu-item><a routerLink="">About Us</a></li>
     </ul>
 
     <!--<a *ngIf="!userLoggedIn"  routerLink="/auth/register" nz-button nzType="default" class="sign-in-button" nzShape="round">Sign In </a>-->
@@ -94,9 +96,9 @@
       (nzOnClose)="close()"
     >
       <ng-container *nzDrawerContent>
-        <p><a routerLink="" class="nav-small">Products</a></p>
-        <p><a routerLink="" class="nav-small">Categories</a></p>
-        <p><a routerLink="" class="nav-small">About Us</a></p>
+        <p><a routerLink="/job-list">Products</a></p>
+        <p><a routerLink="/companies">Categories</a></p>
+        <p><a routerLink="/brands">Brands</a></p>
       </ng-container>
     </nz-drawer>
     <ng-template #Jobfinder>

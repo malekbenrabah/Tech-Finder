@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { KeycloakService } from 'keycloak-angular';
 import { NzDrawerPlacement } from 'ng-zorro-antd/drawer';
 import { AuthService } from 'src/app/services/auth-service';
 import { User } from 'src/app/services/user/model/user';
@@ -14,7 +15,7 @@ import { UserServiceService } from 'src/app/services/user/user-service.service';
 export class NavbarComponent implements OnInit {
 
   isCollapsed=false;
-  constructor(private userService:UserServiceService, private router:Router, private authService:AuthService) { }
+  constructor(private userService:UserServiceService, private router:Router, private authService:AuthService, private keycloackService:KeycloakService) { }
 
   //drawer
 
@@ -115,7 +116,12 @@ export class NavbarComponent implements OnInit {
   }
 
   login(){
-    this.authService.login();
+    this.authService.login().then(res => {
+      var isAdmin = this.keycloackService.isUserInRole('ADMIN');
+      const redirectUrl = isAdmin ? "http://localhost:4200/admin" : "http://localhost:4200"
+      alert(isAdmin);
+      window.location.href = redirectUrl;
+    });
   }
 
 }

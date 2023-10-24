@@ -56,7 +56,10 @@ import { CompaniesComponent } from './companies/companies.component';
 import { CompanyDetailComponent } from './company-detail/company-detail.component';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzListModule } from 'ng-zorro-antd/list';
-
+import { NzImageModule } from 'ng-zorro-antd/image';
+import { NzSliderModule } from 'ng-zorro-antd/slider';
+import { BrandsComponent } from './brands/brands.component';
+import { JobList2Component } from './job-list2/job-list2.component';
 
 @NgModule({
   declarations: [
@@ -78,7 +81,9 @@ import { NzListModule } from 'ng-zorro-antd/list';
     TopRecruitersComponent,
     NewsletterComponent,
     CompaniesComponent,
-    CompanyDetailComponent
+    CompanyDetailComponent,
+    BrandsComponent,
+    JobList2Component
  
    
   ],
@@ -120,7 +125,9 @@ import { NzListModule } from 'ng-zorro-antd/list';
     NzRadioModule,
     NzTimelineModule,
     NzTagModule,
-    NzListModule
+    NzListModule,
+    NzImageModule,
+    NzSliderModule
    
 
   ],

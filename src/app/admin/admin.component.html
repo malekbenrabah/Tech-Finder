@@ -8,7 +8,7 @@
       <div class="sidebar-logo">
         <a routerLink="/admin" >
           <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
-          <h1 class="logo-h">Job <span class="logo-span">Finder</span></h1>
+          <h1 class="logo-h">Tech<span class="logo-span">Finder</span></h1>
         </a>
       </div>
       <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
@@ -22,34 +22,27 @@
           <i nz-icon nzType="user"></i>
           <span><a routerLink="/admin/account">Profile</a></span>
         </li>
+
         
-       <li nz-submenu nzTitle="Users" nzIcon="team">
+        <li nz-menu-item>
+          <i nz-icon nzType="user"></i>
+          <span><a routerLink="/admin/products">Products</a></span>
+        </li>
+        
+       <li nz-submenu nzTitle="Categories" nzIcon="team">
           <ul>
             <li nz-menu-item nzIcon="form">
-              <a routerLink="/admin/companies">Companies</a>
-            </li>
-            <li nz-menu-item nzIcon="form">
-                <a routerLink="/admin/users">Users</a>
+                <a routerLink="/admin/users">SubCategories</a>
             </li>
           </ul>
-         
        </li>
 
-       <li nz-submenu nzTitle="Jobs" nzIcon="audit">
-          <ul>
-            <li nz-menu-item nzIcon="form">
-              <a routerLink="/admin/jobs">Posted Jobs</a>
-            </li>
-            <li nz-menu-item nzIcon="form">
-                <a routerLink="/admin/users">Users</a>
-            </li>
-          </ul>
-       
-        </li>
+      <li nz-menu-item>
+        <i nz-icon nzType="cart"></i>
+        <span><a routerLink="/admin">Commandes</a></span>
+      </li>
 
-  
-      
-        
+       
       </ul>
     </nz-sider>
     <nz-layout>

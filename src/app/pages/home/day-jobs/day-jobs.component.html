@@ -5,7 +5,8 @@
     </div>
 
     <div nz-row class="job-day-cards">
-        <div class="card-container">
+        <div class="card-container" *ngFor="let product of products | slice:0:4">
+            <!--
             <nz-card  [nzActions]="[viewMore, applyQuick]" class="latest-job-card">
                         
                 <nz-card-meta
@@ -30,8 +31,9 @@
                 
             </nz-card>
             <ng-template #avatarTemplate>
-                <!--<nz-avatar [nzSize]="64" [nzSrc]="job.companyPhoto"  *ngIf="job.companyPhoto!==null"></nz-avatar>-->
-                <nz-avatar [nzSize]="64"  nzIcon="user" ></nz-avatar>
+                <img [src]="product.photos[0]?.path"  />
+
+                <img nz-image width="200px" height="200px" nzSrc="error" [nzFallback]="fallback" alt="no_photo" *ngIf="product.photos.length===0" /> `
                
             </ng-template>
 
@@ -44,7 +46,7 @@
             </ng-template>
 
             <ng-template #descriptionTmpl>
-                <!--<p class="card-description" *ngIf="job.description.length<50">{{job.description}}</p>-->
+             
                 <p class="card-description">description</p>            
             </ng-template>
 
@@ -53,8 +55,56 @@
             </ng-template>
 
             <ng-template #applyQuick>
-                <fa-icon [icon]="myJob" nz-tooltip nzTooltipTitle="Quick apply" ></fa-icon>
+                <fa-icon [icon]="myJob" nz-tooltip nzTooltipTitle="Pictures"  (click)="onClick()"></fa-icon>
             </ng-template>
+            -->
+
+            <nz-card style="width:300px;" [nzCover]="coverTemplate" [nzActions]="[actionSetting, actionEdit,addCart]" class="latest-job-card">
+                <nz-card-meta
+                  [nzTitle]="product.name"
+                  [nzDescription]="descriptionTmpl"
+                  
+                ></nz-card-meta>
+
+                <div nz-row  class="card-footer">
+                    <p class="job-date">{{formatDate(product.created_at)}}</p>  
+                </div>
+            </nz-card>
+            <ng-template #avatarTemplate>
+                <nz-avatar nzSrc="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"></nz-avatar>
+            </ng-template>
+            <ng-template #coverTemplate>
+                <div class="product-photo-container">
+                    <img alt="photo" [src]="product.photos[0].path"  *ngIf="product.photos.length!==0" class="product-photo"/>
+                    <img nz-image nzSrc="error" [nzFallback]="fallback" alt="photo"  *ngIf="product.photos.length===0"  class="product-photo"/> 
+                </div>
+            
+            </ng-template>
+            <ng-template #descriptionTmpl>
+                <div nz-row  class="card-footer">
+                
+
+                    <div nz-col [nzSpan]="12">
+                        <div class="job-type-container">
+                            <p class="product-price">{{product.price}} DT</p>
+                        </div>
+                    </div>
+
+                </div>
+            </ng-template>
+            <ng-template #actionSetting>
+                <a routerLink="/job-detail/{{product.id}}"><i nz-icon nzType="eye" nz-tooltip nzTooltipTitle="View more"></i></a>
+
+            </ng-template>
+            <ng-template #actionEdit>
+                <fa-icon [icon]="myJob" nz-tooltip nzTooltipTitle="Pictures"  (click)="onClick(product.id)"></fa-icon>
+            </ng-template>
+
+            <ng-template #addCart>
+
+                <i nz-icon nzType="shopping-cart"  nz-tooltip nzTooltipTitle="Buy Now" nzTheme="outline"></i>
+            </ng-template>
+            
 
         </div>
        
